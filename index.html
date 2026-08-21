@@ -1,109 +1,99 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f6f78">
-  <meta name="robots" content="noindex, nofollow, noarchive">
-  <meta name="referrer" content="no-referrer">
-  <meta name="description" content="Invitación especial al cumpleaños de Mavis">
-  <title>Una invitación especial para ti ✨</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0ea7a5" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="description" content="Invitación al cumpleaños de Mavis Isabella Ramírez" />
+  <title>Invitación de Mavis ✨</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="experience" id="experience">
-    <div class="sky-glow" aria-hidden="true"></div>
-    <div class="stars" id="stars" aria-hidden="true"></div>
+  <main class="page">
+    <section class="landing" id="landing" aria-labelledby="welcomeTitle">
+      <div class="bg-paint"></div>
+      <img class="floating floating-sun" src="assets/icon-sun.png" alt="" aria-hidden="true" />
+      <img class="floating floating-flower" src="assets/icon-flower.png" alt="" aria-hidden="true" />
+      <img class="floating floating-wave" src="assets/icon-wave.png" alt="" aria-hidden="true" />
+      <img class="floating floating-leaf" src="assets/icon-leaf.png" alt="" aria-hidden="true" />
+      <img class="floating floating-boat" src="assets/icon-boat.png" alt="" aria-hidden="true" />
+      <img class="side-character side-left" src="assets/wave-rider.png" alt="" aria-hidden="true" />
+      <img class="side-character side-right" src="assets/pig-friend.png" alt="" aria-hidden="true" />
 
-    <div class="island island-left" aria-hidden="true"></div>
-    <div class="island island-right" aria-hidden="true"></div>
+      <div class="welcome-wrap">
+        <p class="eyebrow">Tienes una invitación especial</p>
+        <h1 id="welcomeTitle">El cumpleaños de<br><span>Mavis</span> está por comenzar</h1>
+        <p class="welcome-copy">Una invitación tierna, mágica y llena de aventura te está esperando.</p>
 
-    <div class="ocean" aria-hidden="true">
-      <div class="wave wave-a"></div>
-      <div class="wave wave-b"></div>
-      <div class="wave wave-c"></div>
-    </div>
-
-    <section class="welcome" id="welcome" aria-labelledby="welcome-title">
-      <p class="eyebrow">Tienes una invitación especial</p>
-      <h1 id="welcome-title">Una aventura<br><span>está por comenzar</span></h1>
-      <p class="welcome-copy">Mavis quiere compartir contigo un día lleno de alegría.</p>
-
-      <button class="envelope-button" id="openInvitation" type="button" aria-label="Abrir invitación">
-        <span class="envelope" aria-hidden="true">
-          <span class="envelope-back"></span>
-          <span class="letter-peek">
-            <span class="letter-flower">✦</span>
-            <span class="letter-name">Mavis</span>
+        <button id="openBtn" class="envelope-trigger" type="button" aria-label="Abrir invitación">
+          <span class="envelope-scene">
+            <span class="spark spark-1"></span>
+            <span class="spark spark-2"></span>
+            <span class="spark spark-3"></span>
+            <span class="letter-preview">
+              <span class="letter-badge">5 años</span>
+              <span class="letter-title">Mavis</span>
+            </span>
+            <span class="envelope-shell"></span>
+            <span class="envelope-left"></span>
+            <span class="envelope-right"></span>
+            <span class="envelope-bottom"></span>
+            <span class="envelope-flap"></span>
+            <span class="seal"><img src="assets/icon-sun.png" alt="" aria-hidden="true" /></span>
+            <img class="envelope-top-icon" src="assets/icon-wave.png" alt="" aria-hidden="true" />
           </span>
-          <span class="envelope-left"></span>
-          <span class="envelope-right"></span>
-          <span class="envelope-bottom"></span>
-          <span class="envelope-flap"></span>
-          <span class="seal"><span>5</span></span>
-        </span>
-        <span class="tap-label">Toca el sobre para abrir</span>
-      </button>
+          <span class="tap-copy">Toca el sobre para abrir</span>
+        </button>
+      </div>
     </section>
 
-    <section class="invitation" id="invitation" aria-hidden="true">
+    <section class="invitation hidden" id="invitation" aria-hidden="true">
       <div class="confetti" id="confetti" aria-hidden="true"></div>
-
-      <article class="card" aria-labelledby="mavis-name">
-        <div class="card-glow" aria-hidden="true"></div>
-        <div class="card-decoration card-decoration-top" aria-hidden="true">❀ ✦ ❀</div>
-
-        <p class="card-kicker">Acompáñanos a celebrar</p>
-        <h2 id="mavis-name">Mavis Isabella<br><span>Ramírez</span></h2>
-
-        <div class="age-medallion" aria-label="Cumple 5 años">
-          <span class="age-number">5</span>
-          <span class="age-label">años</span>
-        </div>
-
-        <p class="celebration-copy">Será una mañana muy especial y nos encantará compartirla contigo.</p>
-
-        <div class="event-details">
-          <div class="detail-row">
-            <span class="detail-icon" aria-hidden="true">✦</span>
-            <div>
-              <span class="detail-label">Fecha</span>
-              <strong>Domingo 20 de septiembre de 2026</strong>
-            </div>
+      <img class="floating floating-sun inside-sun" src="assets/icon-sun.png" alt="" aria-hidden="true" />
+      <img class="floating floating-flower inside-flower" src="assets/icon-flower.png" alt="" aria-hidden="true" />
+      <img class="floating floating-wave inside-wave" src="assets/icon-wave.png" alt="" aria-hidden="true" />
+      <article class="card">
+        <div class="card-ribbon">¡Estás invitado!</div>
+        <div class="card-header">
+          <div class="title-block">
+            <p class="mini-title">Acompáñanos a celebrar</p>
+            <h2>Mavis Isabella<br><span>Ramírez</span></h2>
+            <p class="subtitle">una mañana especial para celebrar sus</p>
+            <div class="age-pill"><strong>5</strong><span>años</span></div>
           </div>
-
-          <div class="detail-row">
-            <span class="detail-icon" aria-hidden="true">☀</span>
-            <div>
-              <span class="detail-label">Hora</span>
-              <strong>9:30 a. m.</strong>
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <span class="detail-icon" aria-hidden="true">⌖</span>
-            <div>
-              <span class="detail-label">Lugar</span>
-              <strong>McDonald's</strong>
-              <span class="detail-secondary">6A Avenida 10-56, Zona 1<br>Cerca de Plaza Vivar</span>
-            </div>
+          <div class="hero-wrap">
+            <img class="hero-img" src="assets/hero-main.png" alt="Personaje principal decorativo" />
           </div>
         </div>
 
-        <div class="actions">
-          <a class="primary-action"
-             href="https://www.google.com/maps/search/?api=1&query=McDonald%27s%206A%20Avenida%2010-56%20Zona%201%20Guatemala"
-             target="_blank" rel="noopener noreferrer">
-            <span aria-hidden="true">⌖</span>
-            Ver ubicación en Google Maps
-          </a>
+        <div class="details-grid">
+          <div class="detail-box">
+            <span class="detail-tag">Fecha</span>
+            <strong>Domingo 20 de septiembre de 2026</strong>
+          </div>
+          <div class="detail-box">
+            <span class="detail-tag">Hora</span>
+            <strong>9:30 a. m.</strong>
+          </div>
+          <div class="detail-box location-box">
+            <span class="detail-tag">Lugar</span>
+            <strong>McDonald's</strong>
+            <span class="detail-small">6A Avenida 10-56, Zona 1<br/>Cerca de Plaza Vivar</span>
+          </div>
         </div>
 
-        <p class="closing">¡Te esperamos con mucho cariño! <span aria-hidden="true">♡</span></p>
-        <div class="card-decoration card-decoration-bottom" aria-hidden="true">❀ ✦ ❀</div>
+        <div class="action-row">
+          <a class="btn btn-primary" href="https://maps.app.goo.gl/22MkDFEBXrvEKCqE9" target="_blank" rel="noopener noreferrer">Ver ubicación</a>
+          <button class="btn btn-secondary" type="button" id="replayBtn">Ver de nuevo</button>
+        </div>
+
+        <div class="bottom-decor">
+          <img class="mini-character" src="assets/oar-action.png" alt="" aria-hidden="true" />
+          <p class="closing">¡Nos encantará compartir este día contigo!</p>
+          <img class="mini-rooster" src="assets/rooster.png" alt="" aria-hidden="true" />
+        </div>
       </article>
-
-      <button class="replay" id="replayInvitation" type="button">Volver a ver la animación</button>
     </section>
   </main>
 
