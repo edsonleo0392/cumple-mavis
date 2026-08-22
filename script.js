@@ -45,31 +45,38 @@
     if (opened) return;
     opened = true;
 
+    window.scrollTo({ top: 0, behavior: "auto" });
+
     if (instant || REDUCED_MOTION) {
-      window.scrollTo(0, 0);
-      intro.classList.add("is-hidden");
       inviteWrap.classList.add("is-visible");
+      intro.classList.add("is-hidden", "is-gone");
       return;
     }
 
-    window.scrollTo(0, 0);
+    // Keep the real envelope in front for the full opening sequence.
+    // The invitation starts its crossfade only after the letter has risen,
+    // which avoids the strange card-behind-the-envelope overlap seen in V3.6.
     intro.classList.add("opening");
 
     window.setTimeout(() => {
       inviteWrap.classList.add("is-visible");
-    }, 820);
+    }, 1320);
 
     window.setTimeout(() => {
       intro.classList.add("is-hidden");
-      window.scrollTo(0, 0);
-    }, 1580);
+    }, 1450);
+
+    window.setTimeout(() => {
+      intro.classList.add("is-gone");
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }, 2140);
   }
 
   function replayInvitation() {
     opened = false;
     inviteWrap.classList.remove("is-visible");
-    window.scrollTo(0, 0);
-    intro.classList.remove("is-hidden", "opening");
+    window.scrollTo({ top: 0, behavior: "auto" });
+    intro.classList.remove("is-gone", "is-hidden", "opening");
     void intro.offsetWidth;
     openInvitation.focus({ preventScroll: true });
   }

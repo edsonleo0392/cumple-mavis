@@ -1497,3 +1497,250 @@ body.modal-open { overflow: hidden; }
     bottom: max(29vh, 225px) !important;
   }
 }
+
+
+/* ============================================================
+   V3.8 - MOBILE COMPOSITION + ORGANIC ENVELOPE + POLYNESIAN UI
+   ============================================================ */
+
+html,
+body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The intro stays fixed above the page and is removed completely
+   after the transition, preventing invisible blank-space/scroll traps. */
+.intro.is-gone {
+  display: none !important;
+}
+
+/* Reuse the supplied Polynesian artwork instead of generic symbols. */
+.seal {
+  width: 46px;
+  height: 46px;
+  font-size: 0 !important;
+  background: radial-gradient(circle at 36% 30%, #fff3c7 0 20%, #f1cb82 72%, #dba653 100%);
+  border: 2px solid rgba(148, 72, 43, .48);
+  box-shadow:
+    0 3px 9px rgba(70,35,20,.34),
+    inset 0 0 0 2px rgba(255,255,255,.28);
+}
+
+.seal::before {
+  content: "";
+  width: 34px;
+  height: 34px;
+  display: block;
+  background: url("assets/polynesian-sun.png?v=38") center / contain no-repeat;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.2));
+}
+
+.envelope-back::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 64px;
+  height: 30px;
+  transform: translateX(-50%);
+  background: url("assets/polynesian-wave.png?v=38") center / contain no-repeat;
+  opacity: .14;
+  pointer-events: none;
+}
+
+.shell-divider b {
+  width: 42px;
+  height: 24px;
+  display: block;
+  font-size: 0 !important;
+  background: url("assets/polynesian-wave.png?v=38") center / contain no-repeat;
+  opacity: .76;
+}
+
+.card-ornament {
+  width: 30px;
+  height: 30px;
+  font-size: 0 !important;
+  background: url("assets/polynesian-sun.png?v=38") center / contain no-repeat;
+  opacity: .34;
+}
+
+.mini-flower {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  font-size: 0 !important;
+  background: url("assets/polynesian-sun.png?v=38") center / contain no-repeat;
+  animation: slowSpin 11s linear infinite;
+}
+
+/* More tactile envelope: paper depth, less synthetic flat geometry. */
+.envelope {
+  transform-style: preserve-3d;
+  transform-origin: center 70%;
+  filter:
+    drop-shadow(0 16px 18px rgba(4,48,55,.28))
+    drop-shadow(0 3px 2px rgba(80,47,24,.14));
+}
+
+.envelope-back {
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.22), transparent 25% 68%, rgba(131,79,37,.06)),
+    repeating-linear-gradient(7deg, rgba(139,87,40,.025) 0 1px, transparent 1px 5px),
+    linear-gradient(145deg, #f8dca5, #e8b66b);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45);
+}
+
+.envelope-front::before,
+.envelope-front::after {
+  background:
+    linear-gradient(155deg, rgba(255,255,255,.10), transparent 38%),
+    linear-gradient(155deg, #f2cb86, #dda75e);
+}
+
+.envelope-flap {
+  backface-visibility: visible;
+  transform-style: preserve-3d;
+  background:
+    repeating-linear-gradient(7deg, rgba(139,87,40,.025) 0 1px, transparent 1px 5px),
+    linear-gradient(165deg, #fae1ae, #e7b66c);
+  box-shadow: 0 2px 1px rgba(113,66,31,.08);
+}
+
+.letter-peek {
+  box-shadow:
+    0 -2px 0 rgba(255,255,255,.52),
+    0 8px 15px rgba(98,62,35,.12);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(242,180,65,.17), transparent 22%),
+    repeating-linear-gradient(0deg, rgba(135,91,45,.025) 0 1px, transparent 1px 7px),
+    #fff5dc;
+}
+
+/* Organic opening sequence: the envelope stays in place, breathes,
+   opens its flap, releases the seal, then the paper rises. */
+.intro.opening .tap-label {
+  animation: tapLabelOutOrganic .24s ease forwards !important;
+}
+
+.intro.opening .tap-pulse {
+  animation: none !important;
+  opacity: 0 !important;
+}
+
+.intro.opening .envelope-button {
+  animation: envelopeOpenOrganic 1.58s cubic-bezier(.22,.74,.2,1) forwards !important;
+  z-index: 18;
+}
+
+.intro.opening .envelope-flap {
+  transition: none !important;
+  animation: flapOpenOrganic .78s .18s cubic-bezier(.18,.76,.23,1) forwards !important;
+}
+
+.intro.opening .seal {
+  transition: none !important;
+  animation: sealReleaseOrganic .46s .08s cubic-bezier(.2,.7,.25,1) forwards !important;
+}
+
+.intro.opening .letter-peek {
+  transition: none !important;
+  animation: letterRiseOrganic 1.02s .43s cubic-bezier(.18,.82,.2,1) forwards !important;
+}
+
+.intro.opening .opening-flash {
+  animation: invitationFlashOrganic .72s .92s ease-out forwards !important;
+}
+
+.intro.opening .moana-stage {
+  animation: moanaHoldOrganic 1.55s ease-out forwards !important;
+}
+
+@keyframes tapLabelOutOrganic {
+  to { opacity: 0; transform: translate(-50%, 100%) translateY(6px); }
+}
+
+@keyframes envelopeOpenOrganic {
+  0%   { transform: translateX(-50%) translateY(0) scale(1) rotate(0deg); opacity: 1; }
+  18%  { transform: translateX(-50%) translateY(3px) scale(.985) rotate(-.8deg); opacity: 1; }
+  38%  { transform: translateX(-50%) translateY(-4px) scale(1.025) rotate(.6deg); opacity: 1; }
+  74%  { transform: translateX(-50%) translateY(-5px) scale(1.035) rotate(0deg); opacity: 1; }
+  90%  { transform: translateX(-50%) translateY(-6px) scale(1.03) rotate(0deg); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-8px) scale(1.02) rotate(0deg); opacity: 0; }
+}
+
+@keyframes flapOpenOrganic {
+  0%   { transform: rotateX(0deg); }
+  44%  { transform: rotateX(118deg); }
+  76%  { transform: rotateX(174deg); }
+  100% { transform: rotateX(160deg); }
+}
+
+@keyframes sealReleaseOrganic {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  45%  { opacity: 1; transform: translate(-50%, -50%) scale(.92) rotate(-7deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(.45) rotate(11deg); }
+}
+
+@keyframes letterRiseOrganic {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  30%  { transform: translateY(-18px) scale(1.01); opacity: 1; }
+  68%  { transform: translateY(-78px) scale(1.045); opacity: 1; }
+  88%  { transform: translateY(-102px) scale(1.075); opacity: 1; }
+  100% { transform: translateY(-108px) scale(1.08); opacity: 0; }
+}
+
+@keyframes invitationFlashOrganic {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.35); }
+  38%  { opacity: .62; transform: translate(-50%, -50%) scale(1.65); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(3.35); }
+}
+
+@keyframes moanaHoldOrganic {
+  0%, 64% { opacity: 1; }
+  100% { opacity: .28; transform: translateY(-8px) scale(.985); }
+}
+
+/* Exactly 30% larger than the V3.6 mobile figure (236px -> ~307px),
+   and slightly higher. Envelope position is intentionally unchanged. */
+@media (max-width: 600px) {
+  .moana-stage {
+    left: 50% !important;
+    margin-left: -154px !important;
+    width: 307px !important;
+    bottom: max(33vh, 280px) !important;
+    z-index: 12 !important;
+  }
+
+  .moana-stage::before {
+    width: 365px !important;
+    height: 365px !important;
+    opacity: .76 !important;
+  }
+
+  .envelope-button {
+    left: 50% !important;
+    /* keep the V3.6 bottom/size exactly as-is */
+  }
+}
+
+@media (max-width: 370px) {
+  .moana-stage {
+    left: 50% !important;
+    margin-left: -133px !important;
+    width: 265px !important;
+    bottom: max(31vh, 244px) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro.opening .envelope-button,
+  .intro.opening .envelope-flap,
+  .intro.opening .seal,
+  .intro.opening .letter-peek,
+  .intro.opening .opening-flash,
+  .intro.opening .moana-stage {
+    animation: none !important;
+  }
+}
