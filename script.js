@@ -55,15 +55,17 @@
 
     intro.classList.add("opening");
 
+    // Reveal the parchment BEFORE the intro disappears. This removes the blank
+    // frame seen in the previous build and makes the envelope transition continuous.
     window.setTimeout(() => {
       inviteWrap.classList.add("is-visible");
-    }, 760);
+    }, 1120);
 
     window.setTimeout(() => {
       intro.classList.add("is-hidden");
       inviteWrap.setAttribute("tabindex", "-1");
       inviteWrap.focus({ preventScroll: true });
-    }, 1320);
+    }, 1740);
   }
 
   function replayInvitation() {

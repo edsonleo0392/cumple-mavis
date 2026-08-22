@@ -18,7 +18,7 @@
   <script>document.documentElement.classList.remove('no-js');</script>
   <link rel="preload" href="assets/island-bg.png?v=3" as="image">
   <link rel="preload" href="assets/moana-action.png?v=3" as="image">
-  <link rel="stylesheet" href="styles.css?v=3.2">
+  <link rel="stylesheet" href="styles.css?v=3.3">
 </head>
 <body>
   <div class="ocean-scene" aria-hidden="true">
@@ -45,6 +45,8 @@
   </div>
 
   <section class="intro" id="intro" aria-labelledby="introTitle">
+    <div class="opening-flash" aria-hidden="true"></div>
+
     <div class="intro-copy">
       <p class="eyebrow">El océano tiene un mensaje para ti</p>
       <h1 id="introTitle">Mavis te invita a una aventura muy especial <span aria-hidden="true">✨</span></h1>
@@ -69,13 +71,14 @@
   </section>
 
   <main class="invite-wrap" id="inviteWrap">
-    <article class="invite-card" id="inviteCard" aria-labelledby="mavisName">
-      <div class="card-ornament ornament-left" aria-hidden="true">✦</div>
-      <div class="card-ornament ornament-right" aria-hidden="true">✦</div>
+    <div class="invite-shell">
+      <img class="medallion" src="assets/moana-medallion.png?v=3" alt="" aria-hidden="true">
 
-      <img class="medallion" src="assets/moana-medallion.png?v=3" alt="">
+      <article class="invite-card" id="inviteCard" aria-labelledby="mavisName">
+        <div class="card-ornament ornament-left" aria-hidden="true">✦</div>
+        <div class="card-ornament ornament-right" aria-hidden="true">✦</div>
 
-      <div class="card-content">
+        <div class="card-content">
         <p class="adventure-kicker">El océano llamó…</p>
         <p class="invite-line">y esta vez trae una celebración</p>
 
@@ -148,8 +151,9 @@
         </div>
 
         <p class="tiny-note">Domingo 20 de septiembre de 2026 · 9:30 a. m.</p>
-      </div>
-    </article>
+        </div>
+      </article>
+    </div>
 
     <button class="replay-button" id="replayButton" type="button" aria-label="Volver a ver la apertura">
       ↻ Volver a ver
@@ -224,6 +228,6 @@
     </div>
   </noscript>
 
-  <script src="script.js?v=3.2" defer></script>
+  <script src="script.js?v=3.3" defer></script>
 </body>
 </html>

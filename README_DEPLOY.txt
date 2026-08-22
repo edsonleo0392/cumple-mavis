@@ -1,4 +1,4 @@
-CUMPLE MAVIS V3 · ENTREGA FRONTEND
+CUMPLE MAVIS V3.3 · FIX ANIMACION + MEDALLON
 ====================================
 
 Contenido:
@@ -35,3 +35,11 @@ Mavis Isabella Ramírez · 5 años
 Domingo 20/09/2026 · 9:30 a. m.
 McDonald's
 6A Avenida 10-56, Zona 1 (Cerca de Plaza Vivar)
+
+
+FIX V3.3
+- Corrige el cuadro en blanco entre la apertura del sobre y la tarjeta.
+- La apertura ahora tiene acercamiento, apertura de solapa, salida de carta y destello.
+- La tarjeta empieza a aparecer antes de que desaparezca la escena inicial.
+- El medallón superior quedó fuera del contenedor recortado del pergamino, por lo que ya no se corta.
+- Mantiene intacta la integración RSVP R3.2.
