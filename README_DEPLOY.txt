@@ -18,3 +18,7 @@ V4.0 - ENVELOPE ANIMATION FIX
 - La invitación final aparece solo después de terminar la apertura, sin superposición con Moana/sobre.
 - Canoa móvil desplazada fuera del área del sobre durante la apertura.
 - RSVP R3.2 intacto.
+
+V4.1 TEXT REFRESH
+- Solo se actualizaron mensajes y textos visibles.
+- Diseño, animaciones, tamaños, posiciones, RSVP y assets permanecen sin cambios.

@@ -159,7 +159,7 @@
     }
 
     if (payload.status === "CONFIRMADO") {
-      statusText.textContent = "¡Nos vemos en la aventura!";
+      statusText.textContent = "¡Gracias por confirmar!";
       rsvpButton.innerHTML = '<span aria-hidden="true">♥</span> Modificar respuesta';
       return;
     }
@@ -287,7 +287,7 @@
       setMessage("El período de confirmación ya está cerrado.", "error");
     } else {
       setBusy(false);
-      rsvpHelp.textContent = "Puedes modificar tu respuesta mientras el RSVP esté abierto.";
+      rsvpHelp.textContent = "Por favor confirma cuántos adultos y niños asistirán. Podrás modificar tu respuesta mientras el RSVP esté abierto.";
     }
   }
 
@@ -520,7 +520,7 @@
         renderRsvp(verification.payload);
         setMessage(
           decision === "CONFIRMADO"
-            ? "¡Listo! Tu asistencia quedó registrada. Nos vemos en la aventura."
+            ? "¡Gracias por confirmar! Nos dará mucho gusto compartir este día con ustedes."
             : "Tu respuesta quedó registrada. Gracias por avisarnos.",
           "success"
         );
@@ -546,7 +546,7 @@
       if (desiredMatches(refreshed, desired)) {
         clearPending();
         renderRsvp(refreshed);
-        setMessage("¡Listo! Tu respuesta quedó registrada.", "success");
+        setMessage("¡Gracias! Tu respuesta quedó registrada.", "success");
         return;
       }
 
