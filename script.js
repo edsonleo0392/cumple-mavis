@@ -5,6 +5,20 @@
   const TOKEN_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  const FALLBACK_IMAGES = Object.freeze({
+    A_BIG_MAC: "menu-big-mac.webp",
+    A_CUARTO_LIBRA: "menu-cuarto-libra.png",
+    A_BIG_TASTY: "menu-big-tasty.jpg",
+    A_MCFIZZ_ROSA: "drink-mcfizz-rosa.jpg",
+    A_MCFIZZ_AZUL: "drink-mcfizz-azul.jpg",
+    A_MCFIZZ_VERDE: "drink-mcfizz-verde.jpg",
+    N_CAJITA_QUESO: "menu-cajita-quesoburguesa.jpg",
+    N_CAJITA_NUGGETS: "menu-cajita-nuggets.png",
+    N_JAMAICA: "drink-jamaica.jpg",
+    N_NARANJA: "drink-naranja.jpg",
+    N_MANZANA: "drink-manzana.png"
+  });
+
   const params = new URLSearchParams(window.location.search);
   const token = (params.get("i") || "").trim();
 
@@ -17,19 +31,40 @@
   const statusText = document.getElementById("statusText");
 
   const modal = document.getElementById("rsvpModal");
+  const rsvpSheet = modal.querySelector(".rsvp-sheet");
   const modalClose = document.getElementById("modalClose");
   const rsvpLoading = document.getElementById("rsvpLoading");
   const rsvpContent = document.getElementById("rsvpContent");
   const rsvpMessage = document.getElementById("rsvpMessage");
+  const familyNote = document.getElementById("familyNote");
   const currentAnswer = document.getElementById("currentAnswer");
+  const rsvpProgress = document.getElementById("rsvpProgress");
+
+  const attendanceStep = document.getElementById("attendanceStep");
+  const menuStep = document.getElementById("menuStep");
+  const summaryStep = document.getElementById("summaryStep");
+  const counterList = document.getElementById("counterList");
   const adultRow = document.getElementById("adultRow");
   const childRow = document.getElementById("childRow");
   const adultLimit = document.getElementById("adultLimit");
   const childLimit = document.getElementById("childLimit");
   const adultCount = document.getElementById("adultCount");
   const childCount = document.getElementById("childCount");
-  const confirmButton = document.getElementById("confirmButton");
+  const toMenuButton = document.getElementById("toMenuButton");
   const declineButton = document.getElementById("declineButton");
+
+  const guestProgressText = document.getElementById("guestProgressText");
+  const guestTitle = document.getElementById("guestTitle");
+  const guestTypePill = document.getElementById("guestTypePill");
+  const foodOptions = document.getElementById("foodOptions");
+  const drinkOptions = document.getElementById("drinkOptions");
+  const menuBackButton = document.getElementById("menuBackButton");
+  const menuNextButton = document.getElementById("menuNextButton");
+
+  const summaryCounts = document.getElementById("summaryCounts");
+  const summaryList = document.getElementById("summaryList");
+  const editMenusButton = document.getElementById("editMenusButton");
+  const confirmButton = document.getElementById("confirmButton");
   const rsvpHelp = document.getElementById("rsvpHelp");
   const toast = document.getElementById("toast");
 
@@ -37,6 +72,9 @@
   let state = null;
   let adults = 0;
   let children = 0;
+  let catalog = [];
+  let selections = new Map();
+  let guestIndex = 0;
   let busy = false;
   let lastFocus = null;
   let toastTimer = null;
@@ -53,9 +91,6 @@
       return;
     }
 
-    // V4.0: keep the invitation completely hidden while the physical
-    // envelope opens. The handoff happens only after the paper has risen,
-    // eliminating the card/Moana overlay visible in the previous video.
     intro.classList.add("opening");
 
     window.setTimeout(() => {
@@ -182,13 +217,88 @@
 
   function setBusy(value) {
     busy = value;
-    confirmButton.disabled = value;
-    declineButton.disabled = value;
-    document.querySelectorAll(".step-btn").forEach((btn) => btn.disabled = value);
+    const selectors = [
+      ".step-btn", ".menu-option", "#toMenuButton", "#declineButton",
+      "#menuBackButton", "#menuNextButton", "#editMenusButton", "#confirmButton"
+    ];
+    document.querySelectorAll(selectors.join(",")).forEach((button) => {
+      button.disabled = value;
+    });
+    renderCounts();
+    if (!menuStep.hidden) renderGuestChooser();
+  }
+
+  function normalizeCatalog(items) {
+    if (!Array.isArray(items)) return [];
+    return items
+      .filter((item) => item && item.active !== false)
+      .map((item) => ({
+        id: String(item.id || "").trim(),
+        category: String(item.category || "").trim().toUpperCase(),
+        guestType: String(item.guestType || "").trim().toUpperCase(),
+        name: String(item.name || "").trim(),
+        image: String(item.image || FALLBACK_IMAGES[item.id] || "").trim(),
+        order: Number(item.order || 0)
+      }))
+      .filter((item) => item.id && item.name && ["COMIDA", "BEBIDA"].includes(item.category))
+      .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name, "es"));
+  }
+
+  function optionById(id) {
+    return catalog.find((item) => item.id === id) || null;
+  }
+
+  function catalogFor(guestType, category) {
+    return catalog.filter((item) => item.guestType === guestType && item.category === category);
+  }
+
+  function buildGuests() {
+    const guests = [];
+    for (let i = 1; i <= adults; i++) {
+      guests.push({ slot: "A" + i, type: "ADULTO", label: "Adulto " + i });
+    }
+    for (let i = 1; i <= children; i++) {
+      guests.push({ slot: "N" + i, type: "NINO", label: "Niño " + i });
+    }
+    return guests;
+  }
+
+  function reconcileSelections() {
+    const guests = buildGuests();
+    const allowed = new Set(guests.map((guest) => guest.slot));
+
+    Array.from(selections.keys()).forEach((slot) => {
+      if (!allowed.has(slot)) selections.delete(slot);
+    });
+
+    guests.forEach((guest) => {
+      const current = selections.get(guest.slot);
+      if (!current) {
+        selections.set(guest.slot, { type: guest.type, menuId: "", drinkId: "" });
+        return;
+      }
+      current.type = guest.type;
+    });
+  }
+
+  function seedSelections(payload) {
+    selections = new Map();
+    if (Array.isArray(payload.menuSelections)) {
+      payload.menuSelections.forEach((item) => {
+        const slot = String(item.slot || "").trim().toUpperCase();
+        if (!slot) return;
+        selections.set(slot, {
+          type: String(item.type || "").trim().toUpperCase(),
+          menuId: String(item.menuId || "").trim(),
+          drinkId: String(item.drinkId || "").trim()
+        });
+      });
+    }
+    reconcileSelections();
   }
 
   function setCount(type, value) {
-    if (!state || !state.ok) return;
+    if (!state || !state.ok || busy) return;
 
     const max = type === "adults" ? state.adultsMax : state.childrenMax;
     const clamped = Math.max(0, Math.min(max, value));
@@ -196,6 +306,7 @@
     if (type === "adults") adults = clamped;
     else children = clamped;
 
+    reconcileSelections();
     renderCounts();
   }
 
@@ -222,6 +333,8 @@
       const delta = Number(btn.dataset.delta);
       btn.disabled = busy || (delta < 0 ? children <= 0 : children >= state.childrenMax);
     });
+
+    toMenuButton.disabled = busy || adults + children < 1 || !state.menuSelectionEnabled;
   }
 
   function seedCounts(payload) {
@@ -242,7 +355,8 @@
         "Respuesta actual: " +
         payload.adultsConfirmed + " adulto" + (payload.adultsConfirmed === 1 ? "" : "s") +
         " y " +
-        payload.childrenConfirmed + " niño" + (payload.childrenConfirmed === 1 ? "" : "s") + ".";
+        payload.childrenConfirmed + " niño" + (payload.childrenConfirmed === 1 ? "" : "s") +
+        ". Los menús guardados aparecerán preseleccionados.";
       return;
     }
 
@@ -256,6 +370,193 @@
     currentAnswer.textContent = "";
   }
 
+  function showStep(name) {
+    const panels = {
+      attendance: attendanceStep,
+      menus: menuStep,
+      summary: summaryStep
+    };
+    const order = ["attendance", "menus", "summary"];
+    const currentIndex = order.indexOf(name);
+
+    Object.entries(panels).forEach(([key, panel]) => {
+      panel.hidden = key !== name;
+      panel.classList.toggle("is-active", key === name);
+    });
+
+    rsvpProgress.querySelectorAll("[data-progress]").forEach((item) => {
+      const index = order.indexOf(item.dataset.progress);
+      item.classList.toggle("is-active", index === currentIndex);
+      item.classList.toggle("is-done", index < currentIndex);
+    });
+
+    if (name === "menus") renderGuestChooser();
+    if (name === "summary") renderSummary();
+
+    requestAnimationFrame(() => {
+      try { rsvpSheet.scrollTo({ top: 0, behavior: REDUCED_MOTION ? "auto" : "smooth" }); } catch (_) {}
+    });
+  }
+
+  function optionImagePath(option) {
+    const file = option && (option.image || FALLBACK_IMAGES[option.id]);
+    return file ? "assets/" + file : "";
+  }
+
+  function renderOptionGrid(container, options, selectedId, fieldName, guest) {
+    container.replaceChildren();
+
+    options.forEach((option) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "menu-option" + (option.id === selectedId ? " is-selected" : "");
+      button.dataset.optionId = option.id;
+      button.setAttribute("aria-pressed", option.id === selectedId ? "true" : "false");
+      button.disabled = busy;
+
+      const img = document.createElement("img");
+      img.src = optionImagePath(option);
+      img.alt = "";
+      img.loading = "lazy";
+      img.decoding = "async";
+
+      const label = document.createElement("span");
+      label.className = "option-name";
+      label.textContent = option.name;
+
+      button.append(img, label);
+      button.addEventListener("click", () => {
+        if (busy) return;
+        const choice = selections.get(guest.slot) || { type: guest.type, menuId: "", drinkId: "" };
+        choice[fieldName] = option.id;
+        selections.set(guest.slot, choice);
+        setMessage("");
+        renderGuestChooser();
+      });
+
+      container.appendChild(button);
+    });
+  }
+
+  function guestChoiceComplete(guest) {
+    const choice = selections.get(guest.slot);
+    return Boolean(choice && choice.menuId && choice.drinkId);
+  }
+
+  function renderGuestChooser() {
+    const guests = buildGuests();
+    if (!guests.length) {
+      showStep("attendance");
+      setMessage("Selecciona al menos una persona para continuar.", "error");
+      return;
+    }
+
+    guestIndex = Math.max(0, Math.min(guestIndex, guests.length - 1));
+    const guest = guests[guestIndex];
+    const choice = selections.get(guest.slot) || { type: guest.type, menuId: "", drinkId: "" };
+    selections.set(guest.slot, choice);
+
+    guestProgressText.textContent = (guestIndex + 1) + " de " + guests.length;
+    guestTitle.textContent = guest.label;
+    guestTypePill.textContent = guest.type === "ADULTO" ? "Adulto" : "Niño";
+
+    renderOptionGrid(foodOptions, catalogFor(guest.type, "COMIDA"), choice.menuId, "menuId", guest);
+    renderOptionGrid(drinkOptions, catalogFor(guest.type, "BEBIDA"), choice.drinkId, "drinkId", guest);
+
+    menuBackButton.disabled = busy;
+    menuNextButton.disabled = busy || !guestChoiceComplete(guest);
+    menuNextButton.textContent = guestIndex === guests.length - 1 ? "Revisar →" : "Siguiente →";
+  }
+
+  function createSummaryPick(label, option) {
+    const wrap = document.createElement("div");
+    wrap.className = "summary-pick";
+
+    const img = document.createElement("img");
+    img.src = optionImagePath(option);
+    img.alt = "";
+    img.loading = "lazy";
+
+    const text = document.createElement("div");
+    const small = document.createElement("small");
+    small.textContent = label;
+    const name = document.createElement("span");
+    name.textContent = option ? option.name : "Sin seleccionar";
+    text.append(small, name);
+
+    wrap.append(img, text);
+    return wrap;
+  }
+
+  function renderSummary() {
+    const guests = buildGuests();
+    summaryCounts.replaceChildren();
+
+    const adultChip = document.createElement("span");
+    adultChip.textContent = adults + " adulto" + (adults === 1 ? "" : "s");
+    const childChip = document.createElement("span");
+    childChip.textContent = children + " niño" + (children === 1 ? "" : "s");
+    summaryCounts.append(adultChip, childChip);
+
+    summaryList.replaceChildren();
+    guests.forEach((guest) => {
+      const choice = selections.get(guest.slot) || {};
+      const person = document.createElement("div");
+      person.className = "summary-person";
+
+      const title = document.createElement("strong");
+      title.textContent = guest.label;
+
+      const picks = document.createElement("div");
+      picks.className = "summary-picks";
+      picks.append(
+        createSummaryPick("Menú", optionById(choice.menuId)),
+        createSummaryPick("Bebida", optionById(choice.drinkId))
+      );
+
+      person.append(title, picks);
+      summaryList.appendChild(person);
+    });
+
+    confirmButton.disabled = busy || !allSelectionsComplete();
+  }
+
+  function allSelectionsComplete() {
+    const guests = buildGuests();
+    return guests.length > 0 && guests.every(guestChoiceComplete);
+  }
+
+  function canonicalSelectionsFromUi() {
+    return buildGuests().map((guest) => {
+      const choice = selections.get(guest.slot) || {};
+      return {
+        slot: guest.slot,
+        type: guest.type,
+        menuId: choice.menuId || "",
+        drinkId: choice.drinkId || ""
+      };
+    });
+  }
+
+  function canonicalSelectionsFromPayload(payload) {
+    if (!payload || !Array.isArray(payload.menuSelections)) return [];
+    return payload.menuSelections
+      .map((item) => ({
+        slot: String(item.slot || "").trim().toUpperCase(),
+        type: String(item.type || "").trim().toUpperCase(),
+        menuId: String(item.menuId || "").trim(),
+        drinkId: String(item.drinkId || "").trim()
+      }))
+      .sort((a, b) => a.slot.localeCompare(b.slot));
+  }
+
+  function selectionSignature(items) {
+    return [...items]
+      .sort((a, b) => a.slot.localeCompare(b.slot))
+      .map((item) => [item.slot, item.type, item.menuId, item.drinkId].join("|"))
+      .join(";");
+  }
+
   function renderRsvp(payload) {
     state = payload;
     updateCardStatus(payload);
@@ -265,19 +566,47 @@
     setMessage("");
 
     if (!payload || !payload.ok) {
-      document.getElementById("counterList").hidden = true;
-      document.querySelector(".rsvp-actions").hidden = true;
+      familyNote.hidden = true;
+      rsvpProgress.hidden = true;
+      attendanceStep.hidden = true;
+      menuStep.hidden = true;
+      summaryStep.hidden = true;
       rsvpHelp.textContent = "Este enlace no permite registrar una respuesta.";
       setMessage(payload && payload.message ? payload.message : "No pudimos consultar esta invitación.", "error");
       return;
     }
 
-    document.getElementById("counterList").hidden = false;
-    document.querySelector(".rsvp-actions").hidden = false;
+    familyNote.hidden = false;
+    rsvpProgress.hidden = false;
+    attendanceStep.hidden = false;
+    catalog = normalizeCatalog(payload.catalog);
 
     seedCounts(payload);
+    seedSelections(payload);
     renderCounts();
     renderCurrentAnswer(payload);
+    guestIndex = 0;
+    showStep("attendance");
+
+    if (!payload.menuSelectionEnabled) {
+      setBusy(true);
+      rsvpHelp.textContent = "La selección de menús todavía no está habilitada en el servidor.";
+      setMessage("Esta versión de la invitación necesita Mavis RSVP R4 para guardar menús y bebidas.", "error");
+      return;
+    }
+
+    const catalogReady =
+      catalogFor("ADULTO", "COMIDA").length >= 3 &&
+      catalogFor("ADULTO", "BEBIDA").length >= 3 &&
+      catalogFor("NINO", "COMIDA").length >= 2 &&
+      catalogFor("NINO", "BEBIDA").length >= 3;
+
+    if (!catalogReady) {
+      setBusy(true);
+      rsvpHelp.textContent = "El catálogo de menús está incompleto.";
+      setMessage("No pudimos cargar todas las opciones de menú. Intenta nuevamente más tarde.", "error");
+      return;
+    }
 
     if (!payload.rsvpOpen) {
       setBusy(true);
@@ -287,7 +616,7 @@
       setMessage("El período de confirmación ya está cerrado.", "error");
     } else {
       setBusy(false);
-      rsvpHelp.textContent = "Por favor confirma cuántos adultos y niños asistirán. Podrás modificar tu respuesta mientras el RSVP esté abierto.";
+      rsvpHelp.textContent = "Puedes modificar la confirmación familiar mientras el RSVP esté abierto.";
     }
   }
 
@@ -350,7 +679,7 @@
   }
 
   function pendingKey() {
-    return "mavis-rsvp-pending";
+    return "mavis-rsvp-r4-pending";
   }
 
   function getPending(desired) {
@@ -364,7 +693,8 @@
         item.revision === desired.revision &&
         item.decision === desired.decision &&
         item.adults === desired.adults &&
-        item.children === desired.children;
+        item.children === desired.children &&
+        item.selectionSignature === desired.selectionSignature;
 
       return same ? item : null;
     } catch (_) {
@@ -421,20 +751,25 @@
     if (desired.decision === "NO_ASISTE") {
       return payload.status === "NO_ASISTE" &&
         Number(payload.adultsConfirmed || 0) === 0 &&
-        Number(payload.childrenConfirmed || 0) === 0;
+        Number(payload.childrenConfirmed || 0) === 0 &&
+        canonicalSelectionsFromPayload(payload).length === 0;
     }
 
-    return payload.status === "CONFIRMADO" &&
-      Number(payload.adultsConfirmed || 0) === desired.adults &&
-      Number(payload.childrenConfirmed || 0) === desired.children;
+    if (
+      payload.status !== "CONFIRMADO" ||
+      Number(payload.adultsConfirmed || 0) !== desired.adults ||
+      Number(payload.childrenConfirmed || 0) !== desired.children
+    ) return false;
+
+    return selectionSignature(canonicalSelectionsFromPayload(payload)) === desired.selectionSignature;
   }
 
   async function verifyWrite(desired) {
-    const deadline = Date.now() + 9000;
+    const deadline = Date.now() + 10000;
     let latest = null;
 
     while (Date.now() < deadline) {
-      await new Promise((resolve) => setTimeout(resolve, 620));
+      await new Promise((resolve) => setTimeout(resolve, 650));
 
       try {
         latest = await jsonpStatus();
@@ -468,20 +803,27 @@
       return;
     }
 
+    if (!state.menuSelectionEnabled) {
+      setMessage("La selección de menús todavía no está habilitada en el servidor.", "error");
+      return;
+    }
+
     const desiredAdults = decision === "CONFIRMADO" ? adults : 0;
     const desiredChildren = decision === "CONFIRMADO" ? children : 0;
+    const desiredSelections = decision === "CONFIRMADO" ? canonicalSelectionsFromUi() : [];
 
     if (decision === "CONFIRMADO" && desiredAdults + desiredChildren < 1) {
+      showStep("attendance");
       setMessage("Selecciona al menos una persona para confirmar.", "error");
       return;
     }
 
-    if (desiredMatches(state, {
-      decision,
-      adults: desiredAdults,
-      children: desiredChildren
-    })) {
-      setMessage("Tu respuesta ya coincide con esos datos.", "success");
+    if (decision === "CONFIRMADO" && !allSelectionsComplete()) {
+      const guests = buildGuests();
+      const firstIncomplete = guests.findIndex((guest) => !guestChoiceComplete(guest));
+      guestIndex = firstIncomplete >= 0 ? firstIncomplete : 0;
+      showStep("menus");
+      setMessage("Selecciona un menú y una bebida para cada persona.", "error");
       return;
     }
 
@@ -490,8 +832,15 @@
       revision: Number(state.revision || 0),
       decision,
       adults: desiredAdults,
-      children: desiredChildren
+      children: desiredChildren,
+      selections: desiredSelections,
+      selectionSignature: selectionSignature(desiredSelections)
     };
+
+    if (desiredMatches(state, desired)) {
+      setMessage("Tu respuesta ya coincide con esos datos.", "success");
+      return;
+    }
 
     let pending = getPending(desired);
     if (!pending) {
@@ -500,7 +849,7 @@
     }
 
     setBusy(true);
-    setMessage("Guardando tu respuesta…");
+    setMessage("Guardando asistencia, menús y bebidas…");
 
     try {
       await postOpaque({
@@ -510,7 +859,8 @@
         revision: pending.revision,
         decision: pending.decision,
         adults: pending.adults,
-        children: pending.children
+        children: pending.children,
+        selections: JSON.stringify(pending.selections || [])
       });
 
       const verification = await verifyWrite(desired);
@@ -520,11 +870,11 @@
         renderRsvp(verification.payload);
         setMessage(
           decision === "CONFIRMADO"
-            ? "¡Gracias por confirmar! Nos dará mucho gusto compartir este día con ustedes."
+            ? "¡Gracias por confirmar! Guardamos también los menús y bebidas de la familia."
             : "Tu respuesta quedó registrada. Gracias por avisarnos.",
           "success"
         );
-        showToast("Respuesta guardada correctamente");
+        showToast("Confirmación guardada correctamente");
         return;
       }
 
@@ -546,7 +896,7 @@
       if (desiredMatches(refreshed, desired)) {
         clearPending();
         renderRsvp(refreshed);
-        setMessage("¡Gracias! Tu respuesta quedó registrada.", "success");
+        setMessage("¡Gracias! Tu confirmación y menús quedaron registrados.", "success");
         return;
       }
 
@@ -555,7 +905,6 @@
       setMessage("No pudimos completar la verificación. Intenta nuevamente.", "error");
     } finally {
       setBusy(false);
-      renderCounts();
     }
   }
 
@@ -580,6 +929,58 @@
       setMessage("");
       setCount(type, (type === "adults" ? adults : children) + delta);
     });
+  });
+
+  toMenuButton.addEventListener("click", () => {
+    if (busy || !state || !state.ok) return;
+    if (!state.menuSelectionEnabled) {
+      setMessage("La selección de menús todavía no está habilitada en el servidor.", "error");
+      return;
+    }
+    if (adults + children < 1) {
+      setMessage("Selecciona al menos una persona para continuar.", "error");
+      return;
+    }
+    reconcileSelections();
+    guestIndex = 0;
+    setMessage("");
+    showStep("menus");
+  });
+
+  menuBackButton.addEventListener("click", () => {
+    if (busy) return;
+    if (guestIndex > 0) {
+      guestIndex--;
+      setMessage("");
+      renderGuestChooser();
+      return;
+    }
+    setMessage("");
+    showStep("attendance");
+  });
+
+  menuNextButton.addEventListener("click", () => {
+    if (busy) return;
+    const guests = buildGuests();
+    const guest = guests[guestIndex];
+    if (!guest || !guestChoiceComplete(guest)) {
+      setMessage("Selecciona el menú y la bebida antes de continuar.", "error");
+      return;
+    }
+
+    setMessage("");
+    if (guestIndex < guests.length - 1) {
+      guestIndex++;
+      renderGuestChooser();
+    } else {
+      showStep("summary");
+    }
+  });
+
+  editMenusButton.addEventListener("click", () => {
+    if (busy) return;
+    setMessage("");
+    showStep("attendance");
   });
 
   confirmButton.addEventListener("click", () => submitDecision("CONFIRMADO"));

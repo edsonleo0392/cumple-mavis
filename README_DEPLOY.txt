@@ -1,24 +1,51 @@
-CUMPLE MAVIS V3.9
+CUMPLE MAVIS V4.2 — RSVP VISUAL MENU SELECTION
 
-Cambios:
-- Moana conserva exactamente el tamaño de V3.8 y baja ligeramente.
-- El sobre cerrado ya no muestra la carta afuera.
-- La carta aparece únicamente cuando la solapa empieza a abrirse.
-- La canoa decorativa baja en móvil para que su vela no parezca una carta saliendo del sobre.
-- Símbolos polinesios y RSVP R3.2 permanecen sin cambios.
+BASE:
+- Derivada de V4.1 estable.
+- Intro, Moana, sobre, animación, tarjeta, Maps y diseño principal no se modifican.
+- RSVP familiar mantiene Token, Revision, RequestID, LockService, auditoría e idempotencia.
 
-Despliegue: reemplazar el contenido completo del repositorio por este paquete.
+NUEVO FLUJO RSVP:
+1. Asistencia: elegir cantidad de adultos y niños.
+2. Menús: una persona a la vez.
+3. Revisar: resumen familiar antes de guardar.
 
+NOTA FAMILIAR:
+"Una invitación por familia. La primera respuesta quedará registrada como confirmación familiar. Si necesitan hacer algún cambio, pueden volver a este mismo enlace y actualizarla."
 
-V4.0 - ENVELOPE ANIMATION FIX
-- No se generó ni modificó ninguna imagen.
-- Moana conserva el tamaño de V3.9; solo baja ligeramente.
-- Sobre ~20% más grande en móvil; sello polinesio proporcionalmente más discreto.
-- Carta enmascarada: nunca puede renderizar por debajo del sobre.
-- La invitación final aparece solo después de terminar la apertura, sin superposición con Moana/sobre.
-- Canoa móvil desplazada fuera del área del sobre durante la apertura.
-- RSVP R3.2 intacto.
+CATÁLOGO ADULTOS:
+- Big Mac
+- Cuarto de Libra
+- Big Tasty
+- McFizz Rosa
+- McFizz Azul
+- McFizz Verde
 
-V4.1 TEXT REFRESH
-- Solo se actualizaron mensajes y textos visibles.
-- Diseño, animaciones, tamaños, posiciones, RSVP y assets permanecen sin cambios.
+CATÁLOGO NIÑOS:
+- Cajita Feliz de Quesoburguesa
+- Cajita Feliz de Nuggets
+- Jamaica
+- Naranja
+- Manzana
+
+NO SE MUESTRAN PRECIOS.
+
+BACKEND REQUERIDO:
+- Mavis RSVP R4.0 Menu Selection.
+- Inicializar R4 crea/actualiza:
+  * CatalogoMenu
+  * SeleccionesMenu
+- Un RSVP CONFIRMADO requiere exactamente un menú y una bebida por asistente.
+- NO_ASISTE elimina las selecciones de menú de la invitación.
+- Cambiar únicamente un menú/bebida también incrementa Revision.
+
+DESPLIEGUE:
+1. Primero reemplazar Code.gs por Mavis_RSVP_R4_0_Menu_Selection_Code.gs.
+2. Ejecutar initializeR4 una sola vez.
+3. Ejecutar runDeploymentPreflightR4 y exigir PASS.
+4. Actualizar el deployment existente del Web App a una nueva versión (misma URL).
+5. Reemplazar el contenido del repo GitHub Pages por este ZIP frontend.
+6. Probar con el LinkPersonal vigente de INV-0010 antes de enviar invitaciones reales.
+
+CACHE BUST DE QA:
+https://edsonleo0392.github.io/cumple-mavis/?v=42

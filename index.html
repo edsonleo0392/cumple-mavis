@@ -18,7 +18,7 @@
   <script>document.documentElement.classList.remove('no-js');</script>
   <link rel="preload" href="assets/island-bg.png?v=39" as="image">
   <link rel="preload" href="assets/moana-action.png?v=39" as="image">
-  <link rel="stylesheet" href="styles.css?v=4.1">
+  <link rel="stylesheet" href="styles.css?v=4.2">
 </head>
 <body>
   <div class="ocean-scene" aria-hidden="true">
@@ -165,7 +165,7 @@
       <button class="modal-close" id="modalClose" type="button" aria-label="Cerrar">×</button>
 
       <div class="rsvp-header">
-        <span class="mini-flower" aria-hidden="true">❋</span>
+        <img class="rsvp-symbol" src="assets/polynesian-sun.png?v=4.2" alt="" aria-hidden="true">
         <p>RSVP · Familia</p>
         <h2 id="rsvpTitle">¿Nos acompañarán a celebrar?</h2>
       </div>
@@ -178,44 +178,121 @@
       <div class="rsvp-content" id="rsvpContent" hidden>
         <div class="rsvp-message" id="rsvpMessage" aria-live="polite"></div>
 
+        <div class="family-note" id="familyNote">
+          <img src="assets/polynesian-wave.png?v=4.2" alt="" aria-hidden="true">
+          <div>
+            <strong>Una invitación por familia 🌺</strong>
+            <span>La primera respuesta quedará registrada como confirmación familiar. Si necesitan hacer algún cambio, pueden volver a este mismo enlace y actualizarla.</span>
+          </div>
+        </div>
+
         <div class="current-answer" id="currentAnswer" hidden></div>
 
-        <div class="counter-list" id="counterList">
-          <div class="counter-row" id="adultRow">
-            <div>
-              <strong>Adultos</strong>
-              <span id="adultLimit"></span>
+        <div class="rsvp-progress" id="rsvpProgress" aria-label="Pasos de confirmación">
+          <div class="progress-step is-active" data-progress="attendance"><b>1</b><span>Asistencia</span></div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-progress="menus"><b>2</b><span>Menús</span></div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-progress="summary"><b>3</b><span>Revisar</span></div>
+        </div>
+
+        <section class="rsvp-step is-active" id="attendanceStep" data-step-panel="attendance">
+          <p class="step-lead">Confirma cuántos adultos y niños asistirán.</p>
+
+          <div class="counter-list" id="counterList">
+            <div class="counter-row" id="adultRow">
+              <div>
+                <strong>Adultos</strong>
+                <span id="adultLimit"></span>
+              </div>
+              <div class="stepper" aria-label="Cantidad de adultos">
+                <button type="button" class="step-btn" data-counter="adults" data-delta="-1" aria-label="Quitar adulto">−</button>
+                <output id="adultCount">0</output>
+                <button type="button" class="step-btn" data-counter="adults" data-delta="1" aria-label="Agregar adulto">+</button>
+              </div>
             </div>
-            <div class="stepper" aria-label="Cantidad de adultos">
-              <button type="button" class="step-btn" data-counter="adults" data-delta="-1" aria-label="Quitar adulto">−</button>
-              <output id="adultCount">0</output>
-              <button type="button" class="step-btn" data-counter="adults" data-delta="1" aria-label="Agregar adulto">+</button>
+
+            <div class="counter-row" id="childRow">
+              <div>
+                <strong>Niños</strong>
+                <span id="childLimit"></span>
+              </div>
+              <div class="stepper" aria-label="Cantidad de niños">
+                <button type="button" class="step-btn" data-counter="children" data-delta="-1" aria-label="Quitar niño">−</button>
+                <output id="childCount">0</output>
+                <button type="button" class="step-btn" data-counter="children" data-delta="1" aria-label="Agregar niño">+</button>
+              </div>
             </div>
           </div>
 
-          <div class="counter-row" id="childRow">
+          <div class="selection-explainer">
+            <span aria-hidden="true">🍔</span>
+            <p>Después elegirás <strong>un menú y una bebida para cada persona</strong> que confirmes.</p>
+          </div>
+
+          <div class="rsvp-actions attendance-actions">
+            <button class="flow-primary" id="toMenuButton" type="button">
+              Continuar · elegir menús <span aria-hidden="true">→</span>
+            </button>
+            <button class="decline-btn" id="declineButton" type="button">
+              No podremos acompañarlos
+            </button>
+          </div>
+        </section>
+
+        <section class="rsvp-step" id="menuStep" data-step-panel="menus" hidden>
+          <div class="guest-step-head">
             <div>
-              <strong>Niños</strong>
-              <span id="childLimit"></span>
+              <span class="guest-progress-text" id="guestProgressText">1 de 1</span>
+              <h3 id="guestTitle">Adulto 1</h3>
             </div>
-            <div class="stepper" aria-label="Cantidad de niños">
-              <button type="button" class="step-btn" data-counter="children" data-delta="-1" aria-label="Quitar niño">−</button>
-              <output id="childCount">0</output>
-              <button type="button" class="step-btn" data-counter="children" data-delta="1" aria-label="Agregar niño">+</button>
+            <span class="guest-type-pill" id="guestTypePill">Adulto</span>
+          </div>
+
+          <div class="menu-section">
+            <div class="menu-section-title">
+              <span aria-hidden="true">🍔</span>
+              <div><strong>Elige el menú</strong><small>Una opción para esta persona</small></div>
+            </div>
+            <div class="visual-option-grid food-grid" id="foodOptions"></div>
+          </div>
+
+          <div class="menu-section drink-section">
+            <div class="menu-section-title">
+              <span aria-hidden="true">🥤</span>
+              <div><strong>Elige la bebida</strong><small>Una opción para esta persona</small></div>
+            </div>
+            <div class="visual-option-grid drink-grid" id="drinkOptions"></div>
+          </div>
+
+          <div class="flow-nav">
+            <button class="flow-secondary" id="menuBackButton" type="button">← Anterior</button>
+            <button class="flow-primary" id="menuNextButton" type="button" disabled>Siguiente →</button>
+          </div>
+        </section>
+
+        <section class="rsvp-step" id="summaryStep" data-step-panel="summary" hidden>
+          <div class="summary-heading">
+            <img src="assets/polynesian-wave.png?v=4.2" alt="" aria-hidden="true">
+            <div>
+              <span>Todo listo</span>
+              <h3>Revisa la confirmación</h3>
             </div>
           </div>
-        </div>
 
-        <div class="rsvp-actions">
-          <button class="confirm-btn" id="confirmButton" type="button">
-            Sí, asistiremos <span aria-hidden="true">🌺</span>
-          </button>
-          <button class="decline-btn" id="declineButton" type="button">
-            No podremos acompañarlos
-          </button>
-        </div>
+          <div class="summary-counts" id="summaryCounts"></div>
+          <div class="summary-list" id="summaryList"></div>
 
-        <p class="rsvp-help" id="rsvpHelp">Por favor confirma cuántos adultos y niños asistirán. Podrás modificar tu respuesta mientras el RSVP esté abierto.</p>
+          <button class="edit-selection-btn" id="editMenusButton" type="button">← Cambiar asistencia o menús</button>
+
+          <div class="rsvp-actions summary-actions">
+            <button class="confirm-btn" id="confirmButton" type="button">
+              Confirmar asistencia y menús <span aria-hidden="true">🌺</span>
+            </button>
+          </div>
+        </section>
+
+        <p class="rsvp-help" id="rsvpHelp">Puedes modificar la confirmación familiar mientras el RSVP esté abierto.</p>
       </div>
     </section>
   </div>
@@ -228,6 +305,6 @@
     </div>
   </noscript>
 
-  <script src="script.js?v=4.1" defer></script>
+  <script src="script.js?v=4.2" defer></script>
 </body>
 </html>
