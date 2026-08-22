@@ -1,4 +1,4 @@
-CUMPLE MAVIS V3.3 · FIX ANIMACION + MEDALLON
+CUMPLE MAVIS V3.4 - MOBILE LAYOUT + OPENING FLOW FIX
 ====================================
 
 Contenido:
@@ -43,3 +43,12 @@ FIX V3.3
 - La tarjeta empieza a aparecer antes de que desaparezca la escena inicial.
 - El medallón superior quedó fuera del contenedor recortado del pergamino, por lo que ya no se corta.
 - Mantiene intacta la integración RSVP R3.2.
+
+
+FIX V3.4
+- Intro fixed: no deja un viewport vacio en el documento.
+- Scroll normal inmediatamente al abrir la invitacion.
+- Sobre centrado en movil.
+- Tarjeta reducida a 88vw con tipografia y espaciados compactos.
+- Medallon superior mas pequeno y sin recorte.
+- RSVP R3.2 sin cambios.

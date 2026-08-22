@@ -182,14 +182,17 @@ button {
 .sparkles i:nth-child(8){left:35%;top:70%;animation-delay:2.9s}
 
 .intro {
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  width: 100%;
+  height: 100svh;
   min-height: 100svh;
   display: grid;
   place-items: center;
   overflow: hidden;
   padding: max(24px, env(safe-area-inset-top)) 18px calc(36px + var(--safe-bottom));
-  transition: opacity .8s ease, visibility .8s ease;
+  transition: opacity .65s ease, visibility .65s ease;
 }
 
 .intro::before {
@@ -463,9 +466,10 @@ button {
   position: relative;
   z-index: 20;
   min-height: 100svh;
-  display: grid;
-  place-items: center;
-  padding: max(68px, calc(env(safe-area-inset-top) + 42px)) 16px calc(38px + var(--safe-bottom));
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: max(44px, calc(env(safe-area-inset-top) + 24px)) 16px calc(38px + var(--safe-bottom));
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -486,7 +490,7 @@ button {
 .invite-card {
   position: relative;
   width: 100%;
-  padding: clamp(104px, 17vw, 122px) clamp(22px, 6vw, 44px) 34px;
+  padding: clamp(92px, 14vw, 108px) clamp(20px, 5vw, 36px) 30px;
   background:
     radial-gradient(circle at 15% 9%, rgba(255,255,255,.7), transparent 18%),
     radial-gradient(circle at 86% 88%, rgba(220,166,95,.18), transparent 24%),
@@ -524,14 +528,14 @@ button {
 
 .invite-shell {
   position: relative;
-  width: min(92vw, 560px);
-  padding-top: clamp(82px, 14vw, 106px);
+  width: min(84vw, 500px);
+  padding-top: clamp(72px, 12vw, 94px);
 }
 
 .medallion {
   position: absolute;
   z-index: 6;
-  width: clamp(168px, 38vw, 218px);
+  width: clamp(150px, 32vw, 196px);
   height: auto;
   left: 50%;
   top: 0;
@@ -572,7 +576,7 @@ button {
 .first-name {
   display: block;
   font-family: "Brush Script MT", "Segoe Script", "Snell Roundhand", cursive;
-  font-size: clamp(2.75rem, 12vw, 4.5rem);
+  font-size: clamp(2.45rem, 9.5vw, 4rem);
   font-weight: 600;
   letter-spacing: -.035em;
 }
@@ -597,7 +601,7 @@ button {
 
 .age-number {
   font-family: "Trebuchet MS", Arial, sans-serif;
-  font-size: 3rem;
+  font-size: 2.65rem;
   line-height: .82;
   font-weight: 900;
   color: var(--gold);
@@ -656,7 +660,7 @@ button {
 .date-number {
   min-width: 75px;
   font-family: "Trebuchet MS", Arial, sans-serif;
-  font-size: 4.2rem;
+  font-size: 3.7rem;
   line-height: .78;
   font-weight: 900;
   color: var(--ocean-deep);
@@ -1269,35 +1273,101 @@ body.modal-open { overflow: hidden; }
   }
 
   .moana-stage {
-    width: clamp(238px, 68vw, 330px);
-    left: -76px;
-    bottom: 5vh;
+    width: clamp(220px, 62vw, 300px);
+    left: -78px;
+    bottom: 3vh;
   }
 
   .envelope-button {
-    width: 168px;
-    height: 142px;
-    bottom: max(14vh, 98px);
-    left: 65%;
+    width: 158px;
+    height: 136px;
+    bottom: max(10vh, 72px);
+    left: 50%;
   }
 
   .invite-wrap {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: max(30px, calc(env(safe-area-inset-top) + 16px)) 8px calc(28px + var(--safe-bottom));
   }
 
   .invite-shell {
-    width: min(96vw, 540px);
-    padding-top: 88px;
+    width: min(88vw, 440px);
+    padding-top: 70px;
   }
 
   .invite-card {
-    padding-top: 108px;
+    padding: 86px 18px 26px;
   }
 
   .medallion {
-    width: clamp(174px, 48vw, 208px);
+    width: clamp(142px, 39vw, 174px);
   }
+
+  .first-name {
+    font-size: clamp(2.15rem, 9.2vw, 3rem);
+  }
+
+  .last-name {
+    margin-top: 5px;
+    font-size: clamp(.72rem, 2.9vw, .92rem);
+  }
+
+  .age-mark { margin: 9px 0 5px; }
+  .age-number { font-size: 2.35rem; }
+
+  .celebrate-copy {
+    margin: 6px auto 11px;
+    font-size: .88rem;
+    line-height: 1.42;
+  }
+
+  .shell-divider { margin: 9px auto 12px; }
+
+  .date-feature {
+    margin-bottom: 11px;
+    gap: 8px;
+  }
+
+  .date-number {
+    min-width: 61px;
+    font-size: 3.15rem;
+  }
+
+  .date-copy {
+    gap: 1px;
+    padding-left: 9px;
+  }
+
+  .date-copy strong { font-size: .86rem; }
+  .date-copy span { font-size: .88rem; }
+
+  .event-details {
+    gap: 6px;
+    margin-bottom: 11px;
+  }
+
+  .detail {
+    grid-template-columns: 34px 1fr;
+    gap: 8px;
+    padding: 5px 3px;
+  }
+
+  .detail + .detail { padding-top: 9px; }
+
+  .detail-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .detail strong { font-size: .96rem; }
+  .detail span:not(.detail-icon) { font-size: .82rem; }
+
+  .closing-line {
+    margin: 6px auto 10px;
+    font-size: .86rem;
+  }
+
+  .status-pill { margin-bottom: 10px; }
+  .tiny-note { margin-top: 14px; }
 
   .actions {
     grid-template-columns: 1fr;
@@ -1318,8 +1388,8 @@ body.modal-open { overflow: hidden; }
 
 @media (max-width: 370px) {
   .intro-subtitle { display: none; }
-  .moana-stage { left: -105px; width: 300px; }
-  .envelope-button { left: 64%; bottom: 9vh; }
+  .moana-stage { left: -94px; width: 275px; }
+  .envelope-button { left: 50%; bottom: 8vh; }
   .invite-card { padding-left: 19px; padding-right: 19px; }
   .date-number { font-size: 3.6rem; min-width: 66px; }
   .counter-row { padding: 10px; }

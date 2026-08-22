@@ -46,31 +46,29 @@
     opened = true;
 
     if (instant || REDUCED_MOTION) {
+      window.scrollTo(0, 0);
       intro.classList.add("is-hidden");
       inviteWrap.classList.add("is-visible");
-      inviteWrap.setAttribute("tabindex", "-1");
-      inviteWrap.focus({ preventScroll: true });
       return;
     }
 
+    window.scrollTo(0, 0);
     intro.classList.add("opening");
 
-    // Reveal the parchment BEFORE the intro disappears. This removes the blank
-    // frame seen in the previous build and makes the envelope transition continuous.
     window.setTimeout(() => {
       inviteWrap.classList.add("is-visible");
-    }, 1120);
+    }, 820);
 
     window.setTimeout(() => {
       intro.classList.add("is-hidden");
-      inviteWrap.setAttribute("tabindex", "-1");
-      inviteWrap.focus({ preventScroll: true });
-    }, 1740);
+      window.scrollTo(0, 0);
+    }, 1580);
   }
 
   function replayInvitation() {
     opened = false;
     inviteWrap.classList.remove("is-visible");
+    window.scrollTo(0, 0);
     intro.classList.remove("is-hidden", "opening");
     void intro.offsetWidth;
     openInvitation.focus({ preventScroll: true });
