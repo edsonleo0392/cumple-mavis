@@ -1,11 +1,11 @@
-CUMPLE MAVIS V4.2 — RSVP VISUAL MENU SELECTION
+CUMPLE MAVIS V4.2 — confirmación VISUAL MENU SELECTION
 
 BASE:
 - Derivada de V4.1 estable.
 - Intro, Moana, sobre, animación, tarjeta, Maps y diseño principal no se modifican.
-- RSVP familiar mantiene Token, Revision, RequestID, LockService, auditoría e idempotencia.
+- confirmación familiar mantiene Token, Revision, RequestID, LockService, auditoría e idempotencia.
 
-NUEVO FLUJO RSVP:
+NUEVO FLUJO confirmación:
 1. Asistencia: elegir cantidad de adultos y niños.
 2. Menús: una persona a la vez.
 3. Revisar: resumen familiar antes de guardar.
@@ -31,16 +31,16 @@ CATÁLOGO NIÑOS:
 NO SE MUESTRAN PRECIOS.
 
 BACKEND REQUERIDO:
-- Mavis RSVP R4.0 Menu Selection.
+- Mavis confirmación R4.0 Menu Selection.
 - Inicializar R4 crea/actualiza:
   * CatalogoMenu
   * SeleccionesMenu
-- Un RSVP CONFIRMADO requiere exactamente un menú y una bebida por asistente.
+- Un confirmación CONFIRMADO requiere exactamente un menú y una bebida por asistente.
 - NO_ASISTE elimina las selecciones de menú de la invitación.
 - Cambiar únicamente un menú/bebida también incrementa Revision.
 
 DESPLIEGUE:
-1. Primero reemplazar Code.gs por Mavis_RSVP_R4_0_Menu_Selection_Code.gs.
+1. Primero reemplazar Code.gs por Mavis_confirmación_R4_0_Menu_Selection_Code.gs.
 2. Ejecutar initializeR4 una sola vez.
 3. Ejecutar runDeploymentPreflightR4 y exigir PASS.
 4. Actualizar el deployment existente del Web App a una nueva versión (misma URL).

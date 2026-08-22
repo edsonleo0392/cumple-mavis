@@ -2027,7 +2027,7 @@ body {
 }
 
 /* ==========================================================
-   V4.2 — RSVP VISUAL MENU FLOW · MOANA UI
+   V4.2 — CONFIRMACION FAMILIAR VISUAL · MOANA UI
    ========================================================== */
 
 .rsvp-sheet {
@@ -2570,3 +2570,7 @@ body {
   70% { filter: drop-shadow(0 0 10px rgba(8,118,129,.18)); }
   100% { transform: translateY(0); opacity: 1; filter: none; }
 }
+
+
+/* === V4.2.5 post-confirm flow === */
+.action-rsvp span[aria-hidden="true"] { font-family: Arial, sans-serif; }

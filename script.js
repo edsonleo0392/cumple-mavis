@@ -36,7 +36,9 @@
   const rsvpLoading = document.getElementById("rsvpLoading");
   const rsvpContent = document.getElementById("rsvpContent");
   const rsvpMessage = document.getElementById("rsvpMessage");
+  const rsvpTitle = document.getElementById("rsvpTitle");
   const familyNote = document.getElementById("familyNote");
+  const familyNoteText = document.getElementById("familyNoteText");
   const currentAnswer = document.getElementById("currentAnswer");
   const rsvpProgress = document.getElementById("rsvpProgress");
 
@@ -170,6 +172,30 @@
     });
   }
 
+  function formatDeadlineLong(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+    if (!match) return "";
+    const months = [
+      "enero", "febrero", "marzo", "abril", "mayo", "junio",
+      "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+    const monthIndex = Number(match[2]) - 1;
+    if (monthIndex < 0 || monthIndex > 11) return "";
+    return Number(match[3]) + " de " + months[monthIndex] + " de " + match[1];
+  }
+
+  function formatDeadlineShort(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+    if (!match) return "";
+    const months = [
+      "ene", "feb", "mar", "abr", "may", "jun",
+      "jul", "ago", "sep", "oct", "nov", "dic"
+    ];
+    const monthIndex = Number(match[2]) - 1;
+    if (monthIndex < 0 || monthIndex > 11) return "";
+    return Number(match[3]) + " " + months[monthIndex];
+  }
+
   function updateCardStatus(payload) {
     if (payload && payload.code === "PREVIEW") {
       statusText.textContent = "Invitación digital";
@@ -181,27 +207,25 @@
     if (!payload || !payload.ok) {
       statusText.textContent = "Enlace de invitación no válido";
       statusPill.classList.add("is-error");
-      rsvpButton.textContent = "Ver RSVP";
+      rsvpButton.textContent = "Ver confirmación";
       return;
     }
 
     statusPill.classList.remove("is-error");
 
     if (!payload.rsvpOpen) {
-      statusText.textContent = "RSVP cerrado";
-      rsvpButton.textContent = "Ver respuesta";
+      statusText.textContent = "Confirmación cerrada";
+      rsvpButton.textContent = "Ver mi confirmación";
       return;
     }
 
-    if (payload.status === "CONFIRMADO") {
-      statusText.textContent = "¡Gracias por confirmar!";
-      rsvpButton.innerHTML = '<span aria-hidden="true">♥</span> Modificar respuesta';
-      return;
-    }
+    const deadlineShort = formatDeadlineShort(payload.deadline);
 
-    if (payload.status === "NO_ASISTE") {
-      statusText.textContent = "Respuesta registrada";
-      rsvpButton.innerHTML = '<span aria-hidden="true">♥</span> Modificar respuesta';
+    if (payload.status === "CONFIRMADO" || payload.status === "NO_ASISTE") {
+      statusText.textContent = deadlineShort
+        ? "Editable hasta el " + deadlineShort
+        : "Confirmación registrada";
+      rsvpButton.innerHTML = '<span aria-hidden="true">✎</span> Editar mi invitación';
       return;
     }
 
@@ -614,6 +638,18 @@
 
     familyNote.hidden = false;
     rsvpProgress.hidden = false;
+
+    const deadlineLong = formatDeadlineLong(payload.deadline);
+    const hasExistingAnswer = ["CONFIRMADO", "NO_ASISTE"].includes(payload.status);
+    rsvpTitle.textContent = hasExistingAnswer
+      ? (payload.rsvpOpen ? "Edita tu invitación" : "Tu confirmación")
+      : "¿Nos acompañarán a celebrar?";
+
+    if (familyNoteText) {
+      familyNoteText.textContent = deadlineLong
+        ? "La primera respuesta quedará registrada como confirmación familiar. Si necesitan hacer algún cambio, pueden volver a este enlace y elegir «Editar mi invitación» hasta el " + deadlineLong + "."
+        : "La primera respuesta quedará registrada como confirmación familiar. Si necesitan hacer algún cambio, pueden volver a este enlace y elegir «Editar mi invitación».";
+    }
     attendanceStep.hidden = false;
     catalog = normalizeCatalog(payload.catalog);
 
@@ -626,8 +662,8 @@
 
     if (!payload.menuSelectionEnabled) {
       setBusy(true);
-      rsvpHelp.textContent = "La selección de menús todavía no está habilitada en el servidor.";
-      setMessage("Esta versión de la invitación necesita Mavis RSVP R4 para guardar menús y bebidas.", "error");
+      rsvpHelp.textContent = "La selección de menús no está disponible en este momento.";
+      setMessage("No pudimos habilitar la selección de menús y bebidas. Intenta nuevamente en unos minutos.", "error");
       return;
     }
 
@@ -639,7 +675,7 @@
 
     if (!catalogReady) {
       setBusy(true);
-      rsvpHelp.textContent = "El catálogo de menús está incompleto.";
+      rsvpHelp.textContent = "No pudimos cargar todas las opciones de menú.";
       setMessage("No pudimos cargar todas las opciones de menú. Intenta nuevamente más tarde.", "error");
       return;
     }
@@ -648,11 +684,13 @@
       setBusy(true);
       rsvpHelp.textContent = payload.deadline
         ? "El período de confirmación ya finalizó."
-        : "El RSVP no está disponible.";
+        : "La confirmación ya no está disponible.";
       setMessage("El período de confirmación ya está cerrado.", "error");
     } else {
       setBusy(false);
-      rsvpHelp.textContent = "Puedes modificar la confirmación familiar mientras el RSVP esté abierto.";
+      rsvpHelp.textContent = deadlineLong
+        ? "Puedes editar tu invitación hasta el " + deadlineLong + "."
+        : "Puedes editar tu invitación mientras la confirmación esté disponible.";
     }
   }
 
@@ -715,7 +753,7 @@
   }
 
   function pendingKey() {
-    return "mavis-rsvp-r4-pending";
+    return "mavis-confirmacion-r4-v425-pending";
   }
 
   function getPending(desired) {
@@ -840,7 +878,7 @@
     }
 
     if (!state.menuSelectionEnabled) {
-      setMessage("La selección de menús todavía no está habilitada en el servidor.", "error");
+      setMessage("La selección de menús no está disponible en este momento.", "error");
       return;
     }
 
@@ -874,7 +912,8 @@
     };
 
     if (desiredMatches(state, desired)) {
-      setMessage("Tu respuesta ya coincide con esos datos.", "success");
+      showToast("No había cambios pendientes.");
+      closeModal();
       return;
     }
 
@@ -903,14 +942,14 @@
 
       if (verification.kind === "saved") {
         clearPending();
-        renderRsvp(verification.payload);
-        setMessage(
+        state = verification.payload;
+        updateCardStatus(verification.payload);
+        showToast(
           decision === "CONFIRMADO"
-            ? "¡Gracias por confirmar! Guardamos también los menús y bebidas de la familia."
-            : "Tu respuesta quedó registrada. Gracias por avisarnos.",
-          "success"
+            ? "¡Listo! Asistencia, menús y bebidas guardados."
+            : "¡Listo! Tu respuesta quedó guardada."
         );
-        showToast("Confirmación guardada correctamente");
+        closeModal();
         return;
       }
 
@@ -931,12 +970,14 @@
       const refreshed = await loadStatus({ silent: true });
       if (desiredMatches(refreshed, desired)) {
         clearPending();
-        renderRsvp(refreshed);
-        setMessage("¡Gracias! Tu confirmación y menús quedaron registrados.", "success");
+        state = refreshed;
+        updateCardStatus(refreshed);
+        showToast("¡Listo! Tu invitación quedó guardada.");
+        closeModal();
         return;
       }
 
-      setMessage("No pudimos verificar el guardado. Revisa tu conexión e intenta nuevamente; si el servidor ya lo recibió, reutilizaremos la misma solicitud.", "error");
+      setMessage("No pudimos verificar la confirmación. Revisa tu conexión e intenta nuevamente; si ya se registró, conservaremos la misma solicitud para evitar duplicados.", "error");
     } catch (_) {
       setMessage("No pudimos completar la verificación. Intenta nuevamente.", "error");
     } finally {
@@ -970,7 +1011,7 @@
   toMenuButton.addEventListener("click", () => {
     if (busy || !state || !state.ok) return;
     if (!state.menuSelectionEnabled) {
-      setMessage("La selección de menús todavía no está habilitada en el servidor.", "error");
+      setMessage("La selección de menús no está disponible en este momento.", "error");
       return;
     }
     if (adults + children < 1) {

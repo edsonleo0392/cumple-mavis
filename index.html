@@ -18,7 +18,7 @@
   <script>document.documentElement.classList.remove('no-js');</script>
   <link rel="preload" href="assets/island-bg.png?v=39" as="image">
   <link rel="preload" href="assets/moana-action.png?v=39" as="image">
-  <link rel="stylesheet" href="styles.css?v=4.2.2">
+  <link rel="stylesheet" href="styles.css?v=4.2.5">
 </head>
 <body>
   <div class="ocean-scene" aria-hidden="true">
@@ -165,8 +165,8 @@
       <button class="modal-close" id="modalClose" type="button" aria-label="Cerrar">×</button>
 
       <div class="rsvp-header">
-        <img class="rsvp-symbol" src="assets/polynesian-sun.png?v=4.2" alt="" aria-hidden="true">
-        <p>RSVP · Familia</p>
+        <img class="rsvp-symbol" src="assets/polynesian-sun.png?v=4.2.5" alt="" aria-hidden="true">
+        <p>Confirmación familiar</p>
         <h2 id="rsvpTitle">¿Nos acompañarán a celebrar?</h2>
       </div>
 
@@ -179,10 +179,10 @@
         <div class="rsvp-message" id="rsvpMessage" aria-live="polite"></div>
 
         <div class="family-note" id="familyNote">
-          <img src="assets/polynesian-wave.png?v=4.2" alt="" aria-hidden="true">
+          <img src="assets/polynesian-wave.png?v=4.2.5" alt="" aria-hidden="true">
           <div>
             <strong>Una invitación por familia 🌺</strong>
-            <span>La primera respuesta quedará registrada como confirmación familiar. Si necesitan hacer algún cambio, pueden volver a este mismo enlace y actualizarla.</span>
+            <span id="familyNoteText">La primera respuesta quedará registrada como confirmación familiar. Si necesitan hacer algún cambio, pueden volver a este mismo enlace y elegir «Editar mi invitación».</span>
           </div>
         </div>
 
@@ -273,7 +273,7 @@
 
         <section class="rsvp-step" id="summaryStep" data-step-panel="summary" hidden>
           <div class="summary-heading">
-            <img src="assets/polynesian-wave.png?v=4.2" alt="" aria-hidden="true">
+            <img src="assets/polynesian-wave.png?v=4.2.5" alt="" aria-hidden="true">
             <div>
               <span>Todo listo</span>
               <h3>Revisa la confirmación</h3>
@@ -292,7 +292,7 @@
           </div>
         </section>
 
-        <p class="rsvp-help" id="rsvpHelp">Puedes modificar la confirmación familiar mientras el RSVP esté abierto.</p>
+        <p class="rsvp-help" id="rsvpHelp">Puedes editar tu invitación mientras la confirmación esté disponible.</p>
       </div>
     </section>
   </div>
@@ -305,6 +305,6 @@
     </div>
   </noscript>
 
-  <script src="script.js?v=4.2.2" defer></script>
+  <script src="script.js?v=4.2.5" defer></script>
 </body>
 </html>
