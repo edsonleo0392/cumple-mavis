@@ -398,6 +398,38 @@
     });
   }
 
+  function scrollGuestChooserToStart({ announce = false } = {}) {
+    requestAnimationFrame(() => {
+      try {
+        const sheetRect = rsvpSheet.getBoundingClientRect();
+        const menuRect = menuStep.getBoundingClientRect();
+        const targetTop = Math.max(0, rsvpSheet.scrollTop + menuRect.top - sheetRect.top - 12);
+        rsvpSheet.scrollTo({
+          top: targetTop,
+          behavior: REDUCED_MOTION ? "auto" : "smooth"
+        });
+      } catch (_) {
+        try { rsvpSheet.scrollTop = 0; } catch (_) {}
+      }
+
+      const head = menuStep.querySelector(".guest-step-head");
+      if (head) {
+        head.classList.remove("guest-turn-cue");
+        void head.offsetWidth;
+        head.classList.add("guest-turn-cue");
+        window.setTimeout(() => head.classList.remove("guest-turn-cue"), 850);
+      }
+
+      if (announce) {
+        const guests = buildGuests();
+        const guest = guests[guestIndex];
+        if (guest) {
+          guestTitle.setAttribute("aria-live", "polite");
+        }
+      }
+    });
+  }
+
   function optionImagePath(option) {
     const file = option && (option.image || FALLBACK_IMAGES[option.id]);
     return file ? "assets/" + file : "";
@@ -465,7 +497,11 @@
 
     menuBackButton.disabled = busy;
     menuNextButton.disabled = busy || !guestChoiceComplete(guest);
-    menuNextButton.textContent = guestIndex === guests.length - 1 ? "Revisar →" : "Siguiente →";
+    if (guestIndex === guests.length - 1) {
+      menuNextButton.textContent = "Revisar →";
+    } else {
+      menuNextButton.textContent = "Siguiente: " + guests[guestIndex + 1].label + " →";
+    }
   }
 
   function createSummaryPick(label, option) {
@@ -953,6 +989,7 @@
       guestIndex--;
       setMessage("");
       renderGuestChooser();
+      scrollGuestChooserToStart({ announce: true });
       return;
     }
     setMessage("");
@@ -972,6 +1009,7 @@
     if (guestIndex < guests.length - 1) {
       guestIndex++;
       renderGuestChooser();
+      scrollGuestChooserToStart({ announce: true });
     } else {
       showStep("summary");
     }

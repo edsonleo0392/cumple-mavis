@@ -2557,3 +2557,16 @@ body {
   .progress-step span { display: none; }
   .progress-line { margin-top: 0; }
 }
+
+
+/* === V4.2.2 attendee progression cue === */
+.guest-step-head.guest-turn-cue {
+  animation: guestTurnCue .78s cubic-bezier(.2,.85,.2,1);
+}
+
+@keyframes guestTurnCue {
+  0% { transform: translateY(-5px); opacity: .62; }
+  45% { transform: translateY(0); opacity: 1; }
+  70% { filter: drop-shadow(0 0 10px rgba(8,118,129,.18)); }
+  100% { transform: translateY(0); opacity: 1; filter: none; }
+}
