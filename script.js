@@ -48,28 +48,21 @@
     window.scrollTo({ top: 0, behavior: "auto" });
 
     if (instant || REDUCED_MOTION) {
+      intro.classList.add("is-gone");
       inviteWrap.classList.add("is-visible");
-      intro.classList.add("is-hidden", "is-gone");
       return;
     }
 
-    // Keep the real envelope in front for the full opening sequence.
-    // The invitation starts its crossfade only after the letter has risen,
-    // which avoids the strange card-behind-the-envelope overlap seen in V3.6.
+    // V4.0: keep the invitation completely hidden while the physical
+    // envelope opens. The handoff happens only after the paper has risen,
+    // eliminating the card/Moana overlay visible in the previous video.
     intro.classList.add("opening");
 
     window.setTimeout(() => {
-      inviteWrap.classList.add("is-visible");
-    }, 1320);
-
-    window.setTimeout(() => {
-      intro.classList.add("is-hidden");
-    }, 1450);
-
-    window.setTimeout(() => {
       intro.classList.add("is-gone");
+      inviteWrap.classList.add("is-visible");
       window.scrollTo({ top: 0, behavior: "auto" });
-    }, 2140);
+    }, 1460);
   }
 
   function replayInvitation() {

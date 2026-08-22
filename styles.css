@@ -1818,3 +1818,206 @@ body {
     transform: translateY(36px) !important;
   }
 }
+
+
+/* ============================================================
+   V4.0 - ENVELOPE SCALE + LETTER MASK + CLEAN HANDOFF
+   No image assets are generated or altered in this build.
+   ============================================================ */
+
+/* The letter is physically masked by the envelope. Its bottom edge can
+   never render below the envelope while it rises. */
+.letter-clip {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  top: -120px;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.letter-clip .letter-peek {
+  left: 14px;
+  right: 14px;
+  top: 158px;
+  height: 96px;
+  transform: translateY(20px) scale(.99);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Keep the pocket in front of the paper throughout the extraction. */
+.envelope-back { z-index: 1; }
+.envelope-front { z-index: 4; }
+.envelope-flap { z-index: 5; }
+.seal { z-index: 6; }
+
+/* The supplied Polynesian seal stays exactly the same artwork but is now
+   proportionally calmer against the larger envelope. */
+.seal {
+  width: 44px;
+  height: 44px;
+}
+
+.seal::before {
+  width: 30px;
+  height: 30px;
+}
+
+/* Clean closed state: no paper visible before interaction. */
+.intro:not(.opening) .letter-clip .letter-peek {
+  opacity: 0 !important;
+  transform: translateY(20px) scale(.99) !important;
+}
+
+/* More natural sequence: press -> flap -> paper -> glow -> handoff. */
+.intro.opening .envelope-button {
+  animation: envelopeOpenV40 1.46s cubic-bezier(.22,.72,.18,1) forwards !important;
+}
+
+.intro.opening .envelope-flap {
+  transition: none !important;
+  animation: flapOpenV40 .82s .16s cubic-bezier(.2,.72,.18,1) forwards !important;
+}
+
+.intro.opening .seal {
+  transition: none !important;
+  animation: sealReleaseV40 .42s .08s cubic-bezier(.2,.7,.25,1) forwards !important;
+}
+
+.intro.opening .letter-clip .letter-peek {
+  transition: none !important;
+  animation: letterRiseV40 .88s .46s cubic-bezier(.18,.78,.18,1) forwards !important;
+}
+
+.intro.opening .opening-flash {
+  animation: invitationFlashV40 .58s 1.12s ease-out forwards !important;
+}
+
+.intro.opening .moana-stage {
+  animation: moanaHoldV40 1.45s ease-out forwards !important;
+}
+
+/* The old V3.9 animation is explicitly neutralized for the wrapped letter. */
+.intro.opening > .envelope-button .letter-peek {
+  animation-name: letterRiseV40 !important;
+}
+
+@keyframes envelopeOpenV40 {
+  0%   { transform: translateX(-50%) translateY(0) scale(1) rotate(0deg); opacity: 1; }
+  18%  { transform: translateX(-50%) translateY(3px) scale(.988) rotate(-.55deg); opacity: 1; }
+  42%  { transform: translateX(-50%) translateY(-2px) scale(1.018) rotate(.42deg); opacity: 1; }
+  76%  { transform: translateX(-50%) translateY(-4px) scale(1.025) rotate(0deg); opacity: 1; }
+  92%  { transform: translateX(-50%) translateY(-5px) scale(1.018) rotate(0deg); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-6px) scale(1.012) rotate(0deg); opacity: .96; }
+}
+
+@keyframes flapOpenV40 {
+  0%   { transform: rotateX(0deg); }
+  38%  { transform: rotateX(102deg); }
+  72%  { transform: rotateX(168deg); }
+  100% { transform: rotateX(160deg); }
+}
+
+@keyframes sealReleaseV40 {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  52%  { opacity: 1; transform: translate(-50%, -50%) scale(.92) rotate(-5deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(.55) rotate(7deg); }
+}
+
+@keyframes letterRiseV40 {
+  0%   { transform: translateY(20px) scale(.99); opacity: 0; }
+  18%  { transform: translateY(14px) scale(.995); opacity: .2; }
+  38%  { transform: translateY(-12px) scale(1); opacity: 1; }
+  66%  { transform: translateY(-58px) scale(1.025); opacity: 1; }
+  88%  { transform: translateY(-91px) scale(1.045); opacity: 1; }
+  100% { transform: translateY(-98px) scale(1.05); opacity: .96; }
+}
+
+@keyframes invitationFlashV40 {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.55); }
+  45%  { opacity: .58; transform: translate(-50%, -50%) scale(1.8); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(3.1); }
+}
+
+@keyframes moanaHoldV40 {
+  0%, 72% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: .82; transform: translateY(2px) scale(.995); }
+}
+
+@media (max-width: 600px) {
+  /* Same Moana size as V3.9/V3.8 (307 px), only lower. */
+  .moana-stage {
+    left: 50% !important;
+    margin-left: -154px !important;
+    width: 307px !important;
+    bottom: max(28.5vh, 238px) !important;
+  }
+
+  /* Make the envelope the clear focal action without changing its location. */
+  .envelope-button {
+    width: 190px !important;
+    height: 160px !important;
+    left: 50% !important;
+    bottom: max(10vh, 72px) !important;
+  }
+
+  .envelope {
+    inset: 14px 5px 12px !important;
+  }
+
+  .envelope-back,
+  .envelope-front {
+    top: 25px !important;
+  }
+
+  .envelope-flap {
+    top: 25px !important;
+    height: 86px !important;
+  }
+
+  .seal {
+    top: 82px !important;
+  }
+
+  .letter-clip .letter-peek {
+    top: 160px;
+    height: 102px;
+  }
+
+  .tap-pulse {
+    width: 192px;
+    height: 116px;
+  }
+
+  /* Keep the moving canoe well away from the envelope during the opening;
+     its sail was visually reading as paper below the envelope in the video. */
+  .canoe-track {
+    bottom: -10vh !important;
+    width: 78px !important;
+    opacity: .42 !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .moana-stage {
+    width: 265px !important;
+    margin-left: -133px !important;
+    bottom: max(27vh, 210px) !important;
+  }
+
+  .envelope-button {
+    width: 176px !important;
+    height: 150px !important;
+    bottom: max(8vh, 66px) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter-clip .letter-peek {
+    opacity: 0 !important;
+    transform: translateY(20px) scale(.99) !important;
+  }
+}
