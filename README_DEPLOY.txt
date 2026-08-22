@@ -54,3 +54,9 @@ FIX V3.4
 - RSVP R3.2 sin cambios.
 
 V3.5: Moana centrada arriba del sobre en móvil; sobre mantiene su posición. RSVP sin cambios.
+
+V3.6
+- Moana 28% más grande en móvil.
+- Moana sube aproximadamente 90–110 px respecto a V3.5.
+- El sobre conserva exactamente su posición.
+- RSVP R3.2 sin cambios.

@@ -1467,3 +1467,33 @@ body.modal-open { overflow: hidden; }
     left: 50% !important;
   }
 }
+
+
+/* === V3.6 Moana larger + higher on mobile === */
+@media (max-width: 600px) {
+  .moana-stage {
+    left: 50% !important;
+    margin-left: -118px !important;
+    width: 236px !important;
+    bottom: max(31vh, 260px) !important;
+  }
+
+  .moana-stage::before {
+    width: 300px !important;
+    height: 300px !important;
+    opacity: .9;
+  }
+
+  .envelope-button {
+    left: 50% !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .moana-stage {
+    left: 50% !important;
+    margin-left: -102px !important;
+    width: 204px !important;
+    bottom: max(29vh, 225px) !important;
+  }
+}
