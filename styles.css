@@ -1744,3 +1744,77 @@ body {
     animation: none !important;
   }
 }
+
+
+/* ============================================================
+   V3.9 - MOANA POSITION + CLOSED ENVELOPE CLEANUP
+   ============================================================ */
+
+/* Keep Moana EXACTLY the same size as V3.8. Only lower her slightly. */
+@media (max-width: 600px) {
+  .moana-stage {
+    bottom: max(30.5vh, 258px) !important;
+  }
+
+  /* Keep the decorative canoe low in the water so its sail can never
+     read visually as a letter sticking out of the envelope. */
+  .canoe-track {
+    bottom: -3vh !important;
+    width: 96px !important;
+    opacity: .62 !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .moana-stage {
+    bottom: max(29vh, 225px) !important;
+  }
+
+  .canoe-track {
+    bottom: -4vh !important;
+    width: 88px !important;
+  }
+}
+
+/* Closed envelope: the actual invitation paper is fully tucked inside.
+   It becomes visible only after the flap starts opening. */
+.envelope-front {
+  z-index: 3;
+}
+
+.letter-peek {
+  z-index: 2;
+  transform: translateY(36px);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.intro.opening .letter-peek {
+  animation: letterRiseOrganicV39 1.08s .36s cubic-bezier(.18,.82,.2,1) forwards !important;
+}
+
+@keyframes letterRiseOrganicV39 {
+  0%   { transform: translateY(36px) scale(.985); opacity: 0; }
+  18%  { transform: translateY(28px) scale(.99); opacity: 0; }
+  34%  { transform: translateY(12px) scale(1); opacity: 1; }
+  55%  { transform: translateY(-27px) scale(1.018); opacity: 1; }
+  78%  { transform: translateY(-80px) scale(1.05); opacity: 1; }
+  92%  { transform: translateY(-102px) scale(1.075); opacity: 1; }
+  100% { transform: translateY(-108px) scale(1.08); opacity: 0; }
+}
+
+/* Force a clean sealed state before interaction. */
+.intro:not(.opening) .envelope-flap {
+  transform: rotateX(0deg) !important;
+}
+
+.intro:not(.opening) .seal {
+  opacity: 1 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter-peek {
+    opacity: 0 !important;
+    transform: translateY(36px) !important;
+  }
+}
