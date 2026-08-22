@@ -52,3 +52,5 @@ FIX V3.4
 - Tarjeta reducida a 88vw con tipografia y espaciados compactos.
 - Medallon superior mas pequeno y sin recorte.
 - RSVP R3.2 sin cambios.
+
+V3.5: Moana centrada arriba del sobre en móvil; sobre mantiene su posición. RSVP sin cambios.

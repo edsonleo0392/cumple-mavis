@@ -1424,3 +1424,46 @@ body.modal-open { overflow: hidden; }
     transform: none;
   }
 }
+
+
+/* === V3.5 Mobile composition === */
+@media (max-width: 600px) {
+  .moana-stage {
+    left: 50% !important;
+    margin-left: -92px !important;
+    width: 184px !important;
+    bottom: max(25vh, 210px) !important;
+  }
+
+  .moana-stage::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: 50%;
+    width: 245px;
+    height: 245px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,241,174,.18), transparent 68%);
+    filter: blur(4px);
+    pointer-events: none;
+  }
+
+  .envelope-button {
+    left: 50% !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .moana-stage {
+    left: 50% !important;
+    margin-left: -81px !important;
+    width: 162px !important;
+    bottom: max(24vh, 192px) !important;
+  }
+
+  .envelope-button {
+    left: 50% !important;
+  }
+}
